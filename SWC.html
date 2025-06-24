@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CyberVenom Scam Website Checker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: #00ff9c;
+      font-family: 'Fira Code', monospace;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .container {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.8rem;
+      color: #00ff9c;
+      text-shadow: 0 0 15px #00ff9c;
+    }
+
+    .input-area {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    input[type="text"] {
+      padding: 1rem;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: 1px solid #00ff9c;
+      background-color: #111;
+      color: #0f0;
+      box-shadow: 0 0 10px #00ff9c50;
+      outline: none;
+    }
+
+    button {
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-family: 'Fira Code', monospace;
+      background: #00ff9c;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 20px #00ff9c;
+    }
+
+    button:hover {
+      background: #0f0;
+      transform: scale(1.05);
+      box-shadow: 0 0 30px #00ff9c;
+    }
+
+    .result {
+      margin-top: 2rem;
+      font-size: 1.3rem;
+      color: #ffff00;
+      text-shadow: 0 0 10px #ffff00;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      font-size: 1rem;
+      color: #0f0;
+      background: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    .back-btn:hover {
+      color: #ff0;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='index.html'">⬅ Back</button>
+    <h1>🕵️‍♂️ CyberVenom Scam Website Checker</h1>
+    <div class="input-area">
+      <input type="text" id="urlInput" placeholder="Enter a URL to check (e.g. https://example.com)" />
+      <button onclick="checkURL()">🔍 Check Now</button>
+    </div>
+    <div class="result" id="resultBox"></div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+    let letters = Array(256).join(1).split('');
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0';
+      letters.map((y, index) => {
+        const text = String.fromCharCode(3e4 + Math.random() * 33);
+        const x = index * 10;
+        ctx.fillText(text, x, y);
+        letters[index] = y > 758 + Math.random() * 1e4 ? 0 : y + 10;
+      });
+    };
+    setInterval(draw, 33);
+
+    function checkURL() {
+      const url = document.getElementById('urlInput').value.trim();
+      const resultBox = document.getElementById('resultBox');
+
+      if (!url) {
+        resultBox.innerHTML = '❌ Please enter a valid URL!';
+        return;
+      }
+
+      const suspiciousPatterns = [
+        /free\w{2,10}\./i,
+        /\d{3,}\./,
+        /(bit\.ly|tinyurl\.com|rebrand\.ly|t\.co)/i,
+        /login\.(\w{2,10}\.)?\w+\.(?!com|net|org)/i,
+        /@|\s|http.*http/i,
+        /(account|verify|secure|update)[\w\-]*\.(?!com)/i
+      ];
+
+      let isScam = suspiciousPatterns.some(pattern => pattern.test(url));
+
+      resultBox.innerHTML = isScam
+        ? '⚠️ This URL looks suspicious and might be a SCAM!'
+        : '✅ This URL looks safe (but always double check!).';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phishing Awareness Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body, html {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-family: 'Fira Code', monospace;
+      font-size: 2.5rem;
+      color: #00ff9c;
+      text-shadow: 0 0 10px #ffffff;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #ffff00;
+      margin-bottom: 2rem;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .option {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid #00ff9c;
+      padding: 1.5rem;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px #00ff9c80;
+      position: relative;
+    }
+
+    .option:hover {
+      background: #00ff9c;
+      color: #000;
+      transform: scale(1.05);
+      box-shadow: 0 0 25px #00ff9c;
+    }
+
+    @media (min-width: 768px) {
+      .options {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+  <div class="container">
+    <h1>👨‍💻 Stay Safe from Phishing Attacks</h1>
+    <p>Interactive portal to test, train, and protect yourself online.</p>
+    <div class="options">
+      <div class="option" onclick="window.location.href='quiz.html'">🧠 Take Interactive Phishing Quiz</div>
+      <div class="option" onclick="window.location.href='Mail.html'">📧 Spot Fake Emails</div>
+      <div class="option" onclick="window.location.href='SWC.html'">🌐 Check Scam Websites</div>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    let letters = Array(256).join(1).split('');
+    const draw = () => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0F0';
+      letters.map((y_pos, index) => {
+        let text = String.fromCharCode(3e4 + Math.random() * 33);
+        let x_pos = index * 10;
+        ctx.fillText(text, x_pos, y_pos);
+        letters[index] = y_pos > 758 + Math.random() * 1e4 ? 0 : y_pos + 10;
+      });
+    };
+
+    setInterval(draw, 63);
+  </script>
+</body>
+</html>

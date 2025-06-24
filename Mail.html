@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hacker Email Detector</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: black;
+      position: relative;
+      z-index: 1;
+      flex-direction: column;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+    }
+
+    .terminal-box {
+      position: relative;
+      z-index: 2;
+      background-color: #101010cc;
+      border: 1px solid #00ff88;
+      border-radius: 10px;
+      padding: 30px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 20px #00ff88;
+      animation: glow 2s infinite alternate;
+      color: #00ff88;
+      text-align: center;
+    }
+
+    @keyframes glow {
+      from { box-shadow: 0 0 10px #00ff88; }
+      to { box-shadow: 0 0 25px #00ff88; }
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      background: #000;
+      color: #0f0;
+      border: 2px solid #00ff88;
+      border-radius: 5px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #00ff88;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 5px;
+    }
+
+    button:hover {
+      background-color: #00cc66;
+    }
+
+    .result {
+      margin-top: 10px;
+      font-size: 18px;
+      color: #fff;
+    }
+
+    .result.legit { color: #04ff00; }
+    .result.temp { color: #ffe600; }
+    .result.fake { color: #ff4444; }
+
+    .back-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background-color: transparent;
+      border: 2px solid #00ff88;
+      color: #00ff88;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 16px;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      z-index: 3;
+      transition: all 0.3s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #00ff88;
+      color: #000;
+      box-shadow: 0 0 10px #00ff88;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="matrix"></canvas>
+
+<div class="terminal-box">
+  <h2>👨‍💻 CyberVenom Email Inspector</h2>
+  <input type="email" id="email" placeholder="Enter email to analyze...">
+  <button onclick="checkEmail()">Analyze</button>
+  <div id="result" class="result"></div>
+</div>
+
+
+<button class="back-btn" onclick="goBack()">⬅ Back</button>
+
+<script>
+  
+  const canvas = document.getElementById('matrix');
+  const ctx = canvas.getContext('2d');
+
+  canvas.height = window.innerHeight;
+  canvas.width = window.innerWidth;
+
+  const matrixText = "CyberVenom ";
+  const letters = matrixText.split("");
+
+  const fontSize = 18;
+  const columns = canvas.width / fontSize;
+
+  const drops = [];
+  for(let x = 0; x < columns; x++) drops[x] = 1;
+
+  function drawMatrix() {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ff88";
+    ctx.font = fontSize + "px 'Share Tech Mono'";
+
+    for(let i = 0; i < drops.length; i++) {
+      const text = letters[Math.floor(Math.random() * letters.length)];
+      ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+      if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 83);
+
+  
+  const legitDomains = [
+    "gmail.com", "outlook.com", "mail.yahoo.com", "aol.com", "icloud.com", "protonmail.com",
+    "zoho.com", "mail.com", "gmx.com", "gmx.net", "yandex.ru", "mail.ru", "163.com",
+    "qq.com", "fastmail.com", "hushmail.com", "web.de", "orange.fr", "libero.it", "sapo.pt"
+  ];
+
+  const tempDomains = [
+    "tempmail.com", "10minutemail.com", "mailinator.com", "guerrillamail.com", "dispostable.com",
+    "trashmail.com", "yopmail.com", "temp-mail.org", "getairmail.com", "privatemail.io",
+    "tempmailaddress.com", "throwawaymail.com", "fakeinbox.com", "maildrop.cc", "mytrashmail.com",
+    "tempemail.co", "temp-mail.ru", "nomail.xl.cx", "bouncr.com", "getnada.com", "filter-email.com",
+    "receiveinemail.com", "tempinbox.co.uk", "mytemp.email", "meltmail.com", "tempmailbox.org",
+    "tezmail.com", "fakemail.agency", "mailnesia.com", "spamgourmet.com", "trash-mail.com",
+    "temp-mail.fr", "mailcatch.com", "emailfake.net", "emkei.cz", "temp-mail.ws", "nospam.name",
+    "myfakeemail.me", "temp-mail.cf", "1secmail.com", "fakeemailgenerator.com", "somenotspon.com",
+    "emailondeck.com", "ilovefake.com", "fakemail.net", "mail.td", "tmailor.com", "dispomail.xyz",
+    "mailvn.site", "1secmail.cc", "tempail.com", "tempmail.so", "tempmailo.com", "etempmail.com",
+    "priyo.email", "mail1day.com"
+  ];
+
+  function isValidEmail(email) {
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+  }
+
+  function checkEmail() {
+    const email = document.getElementById("email").value.trim();
+    const result = document.getElementById("result");
+
+    if (!isValidEmail(email)) {
+      result.textContent = "❌ This is a fake or malformed email address.";
+      result.className = "result fake";
+      return;
+    }
+
+    const domain = email.split("@")[1].toLowerCase();
+
+    if (tempDomains.includes(domain)) {
+      result.textContent = `⚠️ Temporary or disposable email detected: ${domain}`;
+      result.className = "result temp";
+    } else if (legitDomains.includes(domain)) {
+      result.textContent = `✅ Legit email detected: ${email}`;
+      result.className = "result legit";
+    } else {
+      result.textContent = `⚠️ Temporary or unrecognized email domain: ${domain}`;
+      result.className = "result fake";
+    }
+  }
+
+  
+  function goBack() {
+    window.location.href = "index.html"; 
+  }
+</script>
+
+</body>
+</html>

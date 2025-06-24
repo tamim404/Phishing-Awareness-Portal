@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Phishing Awareness Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+
+    .quiz-container {
+      max-width: 900px;
+      margin: 4rem auto;
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 0 20px #00ff9c70;
+      animation: fadeIn 1s ease;
+      z-index: 1;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00ff9c;
+      font-family: 'Fira Code', monospace;
+      margin-bottom: 2rem;
+      text-shadow: 0 0 8px #00ff9c;
+    }
+
+    .question {
+      margin-bottom: 2rem;
+      animation: slideUp 0.8s ease;
+    }
+
+    .question h2 {
+      margin-bottom: 1rem;
+      color: #ffff00;
+    }
+
+    .options label {
+      display: block;
+      background: #111;
+      border: 1px solid #00ff9c;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .options label:hover {
+      background: #00ff9c;
+      color: #000;
+      transform: scale(1.02);
+    }
+
+    .submit-btn, .back-btn {
+      display: block;
+      margin: 2rem auto 0;
+      background: #00ff9c;
+      color: #000;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 10px #00ff9c;
+      transition: 0.3s ease;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .submit-btn:hover, .back-btn:hover {
+      background: #00cc7a;
+    }
+
+    .back-btn {
+      margin-top: 1rem;
+      background: transparent;
+      color: #00ff9c;
+      border: 1px solid #00ff9c;
+    }
+
+    .back-btn:hover {
+      background: #00ff9c;
+      color: #000;
+    }
+
+    .result {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-top: 2rem;
+      color: #00ff9c;
+      text-shadow: 0 0 5px #00ff9c;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  
+  <canvas id="matrix"></canvas>
+
+  <div class="quiz-container">
+    <h1>🛡️ Phishing Awareness Quiz</h1>
+    <form id="quizForm">
+      
+    </form>
+    <button class="submit-btn" onclick="submitQuiz()">Submit Answers</button>
+    <button class="back-btn" onclick="goBack()">⬅️ Back to Home</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const chars = "アァイィウヴエェオカガキギクグケゲコゴサザシジスズセゼソゾタダチッヂヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモヤユヨラリルレロワヲンABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
+
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = new Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#00ff9c";
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = chars[Math.floor(Math.random() * chars.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 40);
+  </script>
+
+  
+  <script>
+    const questions = [
+      {
+        q: "You receive an email from your bank asking to confirm your login info via a link. What do you do?",
+        options: [
+          "Click the link and enter info",
+          "Ignore it",
+          "Contact bank using official site",
+          "Forward it to a friend"
+        ],
+        answer: 2
+      },
+      {
+        q: "Which of these is a common sign of a phishing attempt?",
+        options: [
+          "Personalized greeting",
+          "Unusual sender address",
+          "Secure https link",
+          "Familiar company logo"
+        ],
+        answer: 1
+      },
+      {
+        q: "What is the safest way to verify a suspicious link?",
+        options: [
+          "Click it and see",
+          "Check hover preview",
+          "Ask in comments",
+          "Guess based on URL"
+        ],
+        answer: 1
+      },
+      {
+        q: "You get a message saying you won a prize and need to pay a fee to claim it. What's the best action?",
+        options: [
+          "Pay quickly",
+          "Reply with details",
+          "Ignore or report it",
+          "Try it for fun"
+        ],
+        answer: 2
+      },
+      {
+        q: "Which of the following is NOT recommended to prevent phishing?",
+        options: [
+          "Use multi-factor authentication",
+          "Ignore security updates",
+          "Verify URLs",
+          "Check email sender"
+        ],
+        answer: 1
+      },
+      {
+        q: "Why is it risky to reuse the same password?",
+        options: [
+          "Slower typing",
+          "Harder to remember",
+          "One breach = all accounts compromised",
+          "Sites require changes"
+        ],
+        answer: 2
+      },
+      {
+        q: "What should you do if you clicked a phishing link by mistake?",
+        options: [
+          "Nothing, it's fine",
+          "Tell friends",
+          "Change passwords, scan device",
+          "Buy antivirus"
+        ],
+        answer: 2
+      },
+      {
+        q: "An email urges urgent action and threatens account closure. You should:",
+        options: [
+          "Panic and act",
+          "Click fast",
+          "Verify via official contact",
+          "Reply to email"
+        ],
+        answer: 2
+      },
+      {
+        q: "Which type of file is MOST likely to carry phishing malware?",
+        options: [
+          ".jpg",
+          ".docx",
+          ".mp3",
+          ".txt"
+        ],
+        answer: 1
+      },
+      {
+        q: "What’s the best defense against phishing?",
+        options: [
+          "Being skeptical and aware",
+          "Fast clicking",
+          "Trusting everyone",
+          "Avoiding the internet"
+        ],
+        answer: 0
+      }
+    ];
+
+    const quizForm = document.getElementById("quizForm");
+
+    questions.forEach((q, i) => {
+      const wrapper = document.createElement('div');
+      wrapper.classList.add('question');
+      wrapper.innerHTML = `
+        <h2>Q${i + 1}: ${q.q}</h2>
+        <div class="options">
+          ${q.options.map((opt, j) => `
+            <label>
+              <input type="radio" name="q${i}" value="${j}" required /> ${opt}
+            </label>
+          `).join('')}
+        </div>
+      `;
+      quizForm.appendChild(wrapper);
+    });
+
+    function submitQuiz() {
+      const formData = new FormData(quizForm);
+      let score = 0;
+      questions.forEach((q, i) => {
+        if (parseInt(formData.get(`q${i}`)) === q.answer) {
+          score++;
+        }
+      });
+      const result = document.getElementById("result");
+      result.innerHTML = `✅ You scored <strong>${score}</strong> out of <strong>${questions.length}</strong>`;
+    }
+
+    function goBack() {
+      window.location.href = "index.html"; 
+    }
+  </script>
+</body>
+</html>
